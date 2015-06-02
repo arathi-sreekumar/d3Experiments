@@ -17,24 +17,15 @@
 
     <header id="header" class="header block">
       <div class="container">
-        <h1>MHE Prototype</h1>
+        <h1>Parallel coordinates Prototype</h1>
       </div>
     </header>
     <div class="wrapper clearfix">
         <aside class="sidebar col">
           <div class="sidebar-block">
-            <label for="filter-material-level"> Filter by Material Level 1: </label>
-            <select class="filter-material-level" id="filter-material-level" multiple="multiple">
-              <option value="All" selected>All</option>
-              <option value="Polymer">Polymer</option>
-              <option value="Metal">Metal</option>
-              <option value="Ceramic">Ceramic</option>
-              <option value="Composite">Composite</option>
-            </select>
-            <br />
 
-            <label for="filter-material-level-2"> Filter by Material Level 2: </label>
-            <select id="filter-material-level-2" class="filter-material-level-2" multiple="multiple">
+            <label for="filter-group"> Filter by Material Level 2: </label>
+            <select id="filter-group" class="filter-group" multiple="multiple">
               <option value="All" selected>All</option>
             </select>
             <br />
@@ -68,7 +59,7 @@
     </div>
     <footer class="footer">
       <div class="container">
-        <img src="img/sem_logo.png" alt="brought to you by Semantico" />
+        a test prototype by Arathi M S
       </div>
     </footer>
 
@@ -77,45 +68,35 @@
       var materialsDB = createDB();
 
       var createMaterialTable = function (data) {
-        d3.csv('materials-data.csv', function(dataTypes) {
+        d3.csv('data/nutrients-data.csv', function(dataTypes) {
           materialsDB.webdb.setUpMaterialsTable(data, dataTypes);
           materialsDB.webdb.selectAll();
         });
       };
 
       // load csv file and create the chart
-      d3.csv('materials.csv', function(data) {
+      d3.csv('data/nutrients.csv', function(data) {
         createMaterialTable(data);
       });
 
-      $('body').on('change','.filter-material-level, .filter-properties, .filter-material-level-2', function () {
+      $('body').on('change','.filter-group, .filter-properties', function () {
         $('#color-info').empty();
         $('#example-progressive').empty();
-        var materialLevel = $('.filter-material-level').val();
-        var materialLevel2 = $('.filter-material-level-2').val();
+        var group = $('.filter-group').val();
         var columnsList = $('.filter-properties').val();
         var columns = materialsDB.allColumns.join(', ');
         var isSelectAll = true;
-        if ($(this).hasClass('filter-material-level')) {
-          materialsDB.webdb.updateMaterialFilter();
-        }
+
         materialsDB.currentColumns = materialsDB.allColumns;
         if (columnsList.indexOf('All') === -1) {
-          columns = 'Material, Materials_Level_1, Materials_Level_2, '+ columnsList.join(', ');
-          materialsDB.currentColumns = ['Material', 'Materials_Level_1', 'Materials_Level_2'].concat(columnsList);
+          columns = 'name, groups, '+ columnsList.join(', ');
+          materialsDB.currentColumns = ['name', 'groups'].concat(columnsList);
         }
         var query = '';
-        query = 'SELECT ' + columns + ' FROM Materials';
-        if (materialLevel.indexOf('All') === -1) {
+        query = 'SELECT ' + columns + ' FROM Nutrients';
+        if (group.indexOf('All') === -1) {
           isSelectAll = false;
-          query = query + ' WHERE Materials_Level_1 IN ("' + materialLevel.join('", "') + '")';
-        }
-        if (materialLevel2.indexOf('All') === -1) {
-          if (isSelectAll) {
-            query = query + ' WHERE Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
-          } else {
-            query = query + ' AND Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
-          }
+          query = query + ' WHERE groups IN ("' + group.join('", "') + '")';
         }
         materialsDB.webdb.selectQuery(query);
       });
@@ -129,7 +110,7 @@
             var highlightElements = $('.active');
             if (highlightElements.length > 0) {
               highlightElements.each(function () {
-                currentSelections.push($(this).data('material'));
+                currentSelections.push($(this).data('name'));
               });
               highlightSelection(currentSelections);
             } else {
@@ -139,7 +120,7 @@
             $this.addClass('active');
             var highlightElements = $('.active');
             highlightElements.each(function () {
-              currentSelections.push($(this).data('material'));
+              currentSelections.push($(this).data('name'));
             });
             highlightSelection(currentSelections);
           }
@@ -156,39 +137,29 @@
       $('body').on('change', '.toggle-materials-axis', function() {
         $('#example-progressive').empty();
         if($(this).is(':checked')) {
-          $('.toggle-materials-label').text('Hide materials in graph');
-          materialsDB.webdb.changeHideAxes(['Materials_Level_1']);
+          $('.toggle-materials-label').text('Hide names in graph');
+          materialsDB.webdb.changeHideAxes(['groups']);
         } else {
-          $('.toggle-materials-label').text('Show materials in graph');
-          materialsDB.webdb.changeHideAxes(['Material']);
+          $('.toggle-materials-label').text('Show names in graph');
+          materialsDB.webdb.changeHideAxes(['name']);
         }
       });
 
       var highlightSelection = function (currentMaterials) {
           var columns = materialsDB.currentColumns.join(',');
-          var materialLevel = $('.filter-material-level').val();
-          var materialLevel2 = $('.filter-material-level-2').val();
+          var group = $('.filter-group').val();
           var query = '';
           var isSelectAll = true;
-          query = 'SELECT ' + columns + ' FROM Materials';
-          if (materialLevel.indexOf('All') === -1) {
+          query = 'SELECT ' + columns + ' FROM Nutrients';
+          if (group.indexOf('All') === -1) {
             isSelectAll = false;
-            query = query + ' WHERE Materials_Level_1 IN ("' + materialLevel.join('", "') + '")';
-          }
-
-          if (materialLevel2.indexOf('All') === -1) {
-            if (isSelectAll) {
-              query = query + ' WHERE Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
-            } else {
-              query = query + ' AND Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
-            }
-            isSelectAll = false;
+            query = query + ' WHERE groups IN ("' + group.join('", "') + '")';
           }
 
           if (isSelectAll) {
-            query = query + ' WHERE Material IN ("' + currentMaterials.join('", "') + '")';
+            query = query + ' WHERE name IN ("' + currentMaterials.join('", "') + '")';
           } else {
-            query = query + ' AND Material IN ("' + currentMaterials.join('", "') + '")';
+            query = query + ' AND name IN ("' + currentMaterials.join('", "') + '")';
           }
 
           materialsDB.webdb.highlightQuery(query);

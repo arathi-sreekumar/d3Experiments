@@ -2,18 +2,18 @@ var createDB = function () {
     var sqlLite = {};
     sqlLite.webdb = {};
     sqlLite.webdb.db = null;
-    var tableName = 'Materials';
+    var tableName = 'Nutrients';
     var data;
     var currentDataSet = [];
     var dataTypes;
     var parcoords;
     var currentQuery = '';
-    var currentSortedColumn = 'Material';
+    var currentSortedColumn = 'name';
     var currentSorting = 'asc';
-    var hideAxisArray = ['Material'];
+    var hideAxisArray = ['name'];
 
     sqlLite.resultSet = [];
-    sqlLite.allColumns = ['name', 'group'];
+    sqlLite.allColumns = ['name', 'groups'];
     sqlLite.currentColumns = [];
 
     sqlLite.webdb.open = function() {
@@ -24,8 +24,9 @@ var createDB = function () {
 
     sqlLite.webdb.createTable = function(columnsString) {
       var db = sqlLite.webdb.db;
+      var query = "CREATE TABLE IF NOT EXISTS " + tableName + columnsString;
       db.transaction(function(tx) {
-        tx.executeSql("CREATE TABLE IF NOT EXISTS " + tableName + columnsString, [], sqlLite.webdb.onSuccess, sqlLite.webdb.onError);
+        tx.executeSql(query, [], sqlLite.webdb.onSuccess, sqlLite.webdb.onError);
       });
     };
 
@@ -54,14 +55,15 @@ var createDB = function () {
     };
 
     sqlLite.webdb.createAndPopulate = function () {
+        console.log('here at create');
         var columns = '(';
         var firstDataItem = data[0];
         var types = [];
         Object.getOwnPropertyNames(firstDataItem).forEach(function(val, index) {
             if (columns === '(') {
-                columns = columns + val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct") + ' ' + dataTypes[val];
+                columns = columns + val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct") + ' ' + dataTypes[0][val];
             } else {
-                columns = columns + ', ' + val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct") + ' ' + + dataTypes[val];
+                columns = columns + ', ' + val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct") + ' ' + dataTypes[0][val];
             }
         });
         columns += ')';
@@ -72,10 +74,10 @@ var createDB = function () {
     createPropertiesFilter = function () {
         var firstDataItem = data[0];
         var propertyName, propertyValue;
-        var removeProperties = ['name'];
-        var count = 3;
+        var removeProperties = ['name', 'groups'];
+        var count = 2;
         Object.getOwnPropertyNames(firstDataItem).forEach(function(val, index) {
-            if (removeProperties.indexOf(val) === -1 && val !== 'Processing Narrative' && val.indexOf(' Level ') === -1) {
+            if (removeProperties.indexOf(val) === -1) {
                 propertyName = val;
                 propertyValue = val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct");
                 sqlLite.allColumns[count] = propertyValue;
@@ -86,11 +88,11 @@ var createDB = function () {
     };
 
     createGroupFilter = function () {
-        var groups = pluck(data, 'group').filter(function(itm,i,a){
+        var groups = pluck(data, 'groups').filter(function(itm,i,a){
             return i==a.indexOf(itm);
         });
         groups.forEach(function(val, index) {
-            $('#filter-level-2').append('<option value="' + val + '">' + val + '</option>');
+            $('#filter-group').append('<option value="' + val + '">' + val + '</option>');
         });
     };
 
@@ -103,6 +105,7 @@ var createDB = function () {
     };
 
     populateMaterials = function() {
+        console.log('here at populate');
         data.forEach(function(dataItem) {
             var columns = '(';
             var values = '(';
@@ -118,29 +121,6 @@ var createDB = function () {
             columns += ')';
             values += ')';
             sqlLite.webdb.insertIntoTable(columns,values);
-        });
-    };
-
-    sqlLite.webdb.updateMaterialFilter = function() {
-        $('#filter-material-level-2').html('<option value="All" selected>All</option>');
-        var materialLevel = $('.filter-material-level').val();
-        var materialLevel2 = pluck(data, 'Materials Level 2');
-        if (materialLevel.indexOf('All') === -1) {
-            materialLevel2 = data.map(function(item) {
-                if (materialLevel.indexOf(item['Materials Level 1']) !== -1) {
-                    return item['Materials Level 2'];
-                }
-            });
-        }
-
-        materialLevel2 = materialLevel2.filter(function(itm,i,a){
-            return i==a.indexOf(itm);
-        });
-
-        materialLevel2.forEach(function(val, index) {
-            if (val !== undefined) {
-                $('#filter-material-level-2').append('<option value="' + val + '">' + val + '</option>');
-            }
         });
     };
 
@@ -225,9 +205,9 @@ var createDB = function () {
         hideAxisArray = axes;
 
         var colors = d3.scale.category20B();
-        
+
         var color = function(d) {
-            return colors(d['group']);
+            return colors(d['groups']);
         };
 
         parcoords = d3.parcoords()("#example-progressive")
@@ -259,11 +239,11 @@ var createDB = function () {
 
         var color = function(d) {
           //console.log('colors of Processing Narrative: ', colors(d['Processing Narrative']));
-          if (!colorInfo[d['group']]) {
-            colorInfo[d['group']] = colors(d['group']);
-            $infoBlock.append('<li><span class="groupItemColor" style="background-color: ' + colors(d['Materials_Level_1']) + ';"></span> ' + d['Materials_Level_1'] +'</li>');
+          if (!colorInfo[d['groups']]) {
+            colorInfo[d['groups']] = colors(d['groups']);
+            $infoBlock.append('<li><span class="groupItemColor" style="background-color: ' + colors(d['groups']) + ';"></span> ' + d['groups'] +'</li>');
           }
-          return colors(d['Materials_Level_1']);
+          return colors(d['groups']);
         };
 
         parcoords = d3.parcoords()("#example-progressive")

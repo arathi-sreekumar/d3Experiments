@@ -13,13 +13,13 @@ var createDB = function () {
     var hideAxisArray = ['Material'];
 
     sqlLite.resultSet = [];
-    sqlLite.allColumns = ['Material', 'Materials_Level_1', 'Materials_Level_2'];
+    sqlLite.allColumns = ['name', 'group'];
     sqlLite.currentColumns = [];
 
     sqlLite.webdb.open = function() {
       var dbSize = 5 * 1024 * 1024; // 5MB
       //define the name, version, description and the size of the database.
-      sqlLite.webdb.db = openDatabase("MHE_DB", "1.0", "Materials and properties", dbSize);
+      sqlLite.webdb.db = openDatabase("Nutrients_DB", "1.0", "Nutrient", dbSize);
     };
 
     sqlLite.webdb.createTable = function(columnsString) {
@@ -50,7 +50,7 @@ var createDB = function () {
                 sqlLite.webdb.createAndPopulate);
         });
         createPropertiesFilter();
-        createMaterialFilter();
+        createGroupFilter();
     };
 
     sqlLite.webdb.createAndPopulate = function () {
@@ -72,7 +72,7 @@ var createDB = function () {
     createPropertiesFilter = function () {
         var firstDataItem = data[0];
         var propertyName, propertyValue;
-        var removeProperties = ['Material','Processing Narrative', 'Kathy\'s Listing', 'Source'];
+        var removeProperties = ['name'];
         var count = 3;
         Object.getOwnPropertyNames(firstDataItem).forEach(function(val, index) {
             if (removeProperties.indexOf(val) === -1 && val !== 'Processing Narrative' && val.indexOf(' Level ') === -1) {
@@ -85,12 +85,12 @@ var createDB = function () {
         });
     };
 
-    createMaterialFilter = function () {
-        var materialLevel2 = pluck(data, 'Materials Level 2').filter(function(itm,i,a){
+    createGroupFilter = function () {
+        var groups = pluck(data, 'group').filter(function(itm,i,a){
             return i==a.indexOf(itm);
         });
-        materialLevel2.forEach(function(val, index) {
-            $('#filter-material-level-2').append('<option value="' + val + '">' + val + '</option>');
+        groups.forEach(function(val, index) {
+            $('#filter-level-2').append('<option value="' + val + '">' + val + '</option>');
         });
     };
 
@@ -224,15 +224,10 @@ var createDB = function () {
     sqlLite.webdb.changeHideAxes = function (axes) {
         hideAxisArray = axes;
 
-        var colorSet = {
-            Polymer: '#306A89',
-            Ceramic: '#ff7f0e',
-            Metal: '#666666',
-            Composite: '#5F2CA0'
-        };
-
+        var colors = d3.scale.category20B();
+        
         var color = function(d) {
-            return colorSet[d['Materials_Level_1']];
+            return colors(d['group']);
         };
 
         parcoords = d3.parcoords()("#example-progressive")
@@ -253,15 +248,9 @@ var createDB = function () {
     sqlLite.webdb.drawGraph = function () {
 
         var colorInfo = [];
-        var colorSet = {
-            Polymer: '#306A89',
-            Ceramic: '#ff7f0e',
-            Metal: '#666666',
-            Composite: '#5F2CA0'
-        };
         var $infoBlock = $('#color-info');
 
-        //var colors = d3.scale.category10();
+        var colors = d3.scale.category10();
 
         var colorgen = d3.scale.ordinal()
           .range(["#a6cee3","#1f78b4","#b2df8a","#33a02c",
@@ -270,12 +259,11 @@ var createDB = function () {
 
         var color = function(d) {
           //console.log('colors of Processing Narrative: ', colors(d['Processing Narrative']));
-          if (!colorInfo[d['Materials_Level_1']]) {
-            colorInfo[d['Materials_Level_1']] = colorSet[d['Materials_Level_1']];
-            console.log(colorSet[d['Materials_Level_1']], d['Materials_Level_1']);
-            $infoBlock.append('<li><span class="groupItemColor" style="background-color: ' + colorSet[d['Materials_Level_1']] + ';"></span> ' + d['Materials_Level_1'] +'</li>');
+          if (!colorInfo[d['group']]) {
+            colorInfo[d['group']] = colors(d['group']);
+            $infoBlock.append('<li><span class="groupItemColor" style="background-color: ' + colors(d['Materials_Level_1']) + ';"></span> ' + d['Materials_Level_1'] +'</li>');
           }
-          return colorSet[d['Materials_Level_1']];
+          return colors(d['Materials_Level_1']);
         };
 
         parcoords = d3.parcoords()("#example-progressive")
@@ -325,7 +313,7 @@ var createDB = function () {
         var isOdd = true;
         dataSet.forEach(function(dataItem) {
             var rowClass = isOdd?'odd':'even';
-            tableContent = tableContent + '<tr class="data-row ' + rowClass + '" data-material="' + dataItem['Material'] + '">';
+            tableContent = tableContent + '<tr class="data-row ' + rowClass + '" data-name="' + dataItem['name'] + '">';
             isOdd = !isOdd;
             sqlLite.currentColumns.forEach(function(property, index) {
                 tableContent = tableContent + '<td>' + dataItem[property] + '</td>';

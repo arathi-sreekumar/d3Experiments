@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MHE Prototype</title>
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="css/d3.parscoords.css">
+  </head>
+  <body>
+    <script src="js/vendor/jquery.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="js/d3.svg.multibrush.js"></script>
+    <script src="js/d3.parcoords.js"></script>
+    <script src="js/sqlite-db.js"></script>
+
+    <header id="header" class="header block">
+      <div class="container">
+        <h1>MHE Prototype</h1>
+      </div>
+    </header>
+    <div class="wrapper clearfix">
+        <aside class="sidebar col">
+          <div class="sidebar-block">
+            <label for="filter-material-level"> Filter by Material Level 1: </label>
+            <select class="filter-material-level" id="filter-material-level" multiple="multiple">
+              <option value="All" selected>All</option>
+              <option value="Polymer">Polymer</option>
+              <option value="Metal">Metal</option>
+              <option value="Ceramic">Ceramic</option>
+              <option value="Composite">Composite</option>
+            </select>
+            <br />
+
+            <label for="filter-material-level-2"> Filter by Material Level 2: </label>
+            <select id="filter-material-level-2" class="filter-material-level-2" multiple="multiple">
+              <option value="All" selected>All</option>
+            </select>
+            <br />
+
+            <label for="filter-properties">Select properties:</label>
+            <select id="filter-properties" class="filter-properties" multiple="multiple">
+              <option value="All" selected>All</option>
+            </select>
+            <br />
+
+            <label>
+                <input type="checkbox" value="true" name="showMaterials" class="toggle-materials-axis"/>
+                <span class="toggle-materials-label"> Show materials in graph</span>
+            </label>
+          </div>
+        </aside>
+        <div class="main col">
+          <div class="content">
+
+            <p>Total results displayed: <span class="result-count"></span></p>
+
+            <ul id="color-info" class="color-info"></ul>
+
+            <div id="example-progressive" class="parcoords" style="width:100%;height:600px;"></div>
+
+            <div class="table-container">
+              <table id="results-table" cellpadding="10" cellspacing="0" border="1"></table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <img src="img/sem_logo.png" alt="brought to you by Semantico" />
+      </div>
+    </footer>
+
+    <script>
+
+      var materialsDB = createDB();
+
+      var createMaterialTable = function (data) {
+        d3.csv('materials-data.csv', function(dataTypes) {
+          materialsDB.webdb.setUpMaterialsTable(data, dataTypes);
+          materialsDB.webdb.selectAll();
+        });
+      };
+
+      // load csv file and create the chart
+      d3.csv('materials.csv', function(data) {
+        createMaterialTable(data);
+      });
+
+      $('body').on('change','.filter-material-level, .filter-properties, .filter-material-level-2', function () {
+        $('#color-info').empty();
+        $('#example-progressive').empty();
+        var materialLevel = $('.filter-material-level').val();
+        var materialLevel2 = $('.filter-material-level-2').val();
+        var columnsList = $('.filter-properties').val();
+        var columns = materialsDB.allColumns.join(', ');
+        var isSelectAll = true;
+        if ($(this).hasClass('filter-material-level')) {
+          materialsDB.webdb.updateMaterialFilter();
+        }
+        materialsDB.currentColumns = materialsDB.allColumns;
+        if (columnsList.indexOf('All') === -1) {
+          columns = 'Material, Materials_Level_1, Materials_Level_2, '+ columnsList.join(', ');
+          materialsDB.currentColumns = ['Material', 'Materials_Level_1', 'Materials_Level_2'].concat(columnsList);
+        }
+        var query = '';
+        query = 'SELECT ' + columns + ' FROM Materials';
+        if (materialLevel.indexOf('All') === -1) {
+          isSelectAll = false;
+          query = query + ' WHERE Materials_Level_1 IN ("' + materialLevel.join('", "') + '")';
+        }
+        if (materialLevel2.indexOf('All') === -1) {
+          if (isSelectAll) {
+            query = query + ' WHERE Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
+          } else {
+            query = query + ' AND Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
+          }
+        }
+        materialsDB.webdb.selectQuery(query);
+      });
+
+      $('body').on('click', '#results-table .data-row', function() {
+          var $this = $(this);
+          var currentSelections = [];
+
+          if ($this.hasClass('active')) {
+            $this.removeClass('active');
+            var highlightElements = $('.active');
+            if (highlightElements.length > 0) {
+              highlightElements.each(function () {
+                currentSelections.push($(this).data('material'));
+              });
+              highlightSelection(currentSelections);
+            } else {
+              materialsDB.webdb.unHighlight();
+            }
+          } else {
+            $this.addClass('active');
+            var highlightElements = $('.active');
+            highlightElements.each(function () {
+              currentSelections.push($(this).data('material'));
+            });
+            highlightSelection(currentSelections);
+          }
+      });
+
+      $('body').on('click', '.sort-btn', function() {
+        var $this = $(this);
+        var currentColumn = $this.data('column-name');
+        var currentOrder = $this.data('order');
+
+        materialsDB.webdb.sortTable(currentColumn, currentOrder);
+      });
+
+      $('body').on('change', '.toggle-materials-axis', function() {
+        $('#example-progressive').empty();
+        if($(this).is(':checked')) {
+          $('.toggle-materials-label').text('Hide materials in graph');
+          materialsDB.webdb.changeHideAxes(['Materials_Level_1']);
+        } else {
+          $('.toggle-materials-label').text('Show materials in graph');
+          materialsDB.webdb.changeHideAxes(['Material']);
+        }
+      });
+
+      var highlightSelection = function (currentMaterials) {
+          var columns = materialsDB.currentColumns.join(',');
+          var materialLevel = $('.filter-material-level').val();
+          var materialLevel2 = $('.filter-material-level-2').val();
+          var query = '';
+          var isSelectAll = true;
+          query = 'SELECT ' + columns + ' FROM Materials';
+          if (materialLevel.indexOf('All') === -1) {
+            isSelectAll = false;
+            query = query + ' WHERE Materials_Level_1 IN ("' + materialLevel.join('", "') + '")';
+          }
+
+          if (materialLevel2.indexOf('All') === -1) {
+            if (isSelectAll) {
+              query = query + ' WHERE Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
+            } else {
+              query = query + ' AND Materials_Level_2 IN ("' + materialLevel2.join('", "') + '")';
+            }
+            isSelectAll = false;
+          }
+
+          if (isSelectAll) {
+            query = query + ' WHERE Material IN ("' + currentMaterials.join('", "') + '")';
+          } else {
+            query = query + ' AND Material IN ("' + currentMaterials.join('", "') + '")';
+          }
+
+          materialsDB.webdb.highlightQuery(query);
+      };
+
+    </script>
+  </body>
+</html>

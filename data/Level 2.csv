@@ -1,0 +1,121 @@
+Subject filter 1,Subject filter 2,Count
+EEE,Electrical power engineering,20000
+EEE,Semiconductor/integrated circuits design,12345
+EEE,Optical engineering,1234
+EEE,Electronics,9000
+EEE,Power electronics,7210
+EEE,Circuit design,6512
+EEE,Instrumentation and controls,3300
+EEE,Computer engineering (hardware),1800
+ME,Machine elements,10500
+ME,"Fans, pumps and compressors",5777
+ME,Aerospace/aeronautical engineering,5999
+ME,Machining & Metalworking,4680
+ME,HVAC,533
+ME,Strength of materials,4555
+ME,Power generation,3888
+ME,Fluid mechanics,2345
+ME,Automotive engineering,2800
+ME,Robotic engineering,3400
+ME,Vibration and control systems,1234
+ME,Stresses & Strain,4222
+ME,Thermodynamics,3222
+ME,Acoustical engineering,1222
+ME,Nanotechnology,542
+ME,Steam Generation / Steam Plant,1290
+ME,Hydraulics & pneumatics,1560
+ME,Computing & Instrumentation & Controls,999
+ME,Motors,2100
+ME,Valves,5300
+ME,Mechanics of solids,340
+ME,Thermodynamics (ME),760
+ME,Dynamics,888
+ME,Statics,999
+Civil,Construction and building engineering,33000
+Civil,Structural engineering,22000
+Civil,Transportation engineering,8888
+Civil,Geotechnical engineering,9200
+Environmental,Water supply/quality,15117
+Environmental,Wastewater management,10222
+Environmental,Land management,3100
+Environmental,Stormwater management,2700
+Environmental,Solid waste disposal,2588
+Environmental,Air pollution controls,2555
+Environmental,Physical and Chemical Water Treatment Processes,1000
+Environmental,Alternative energy,2340
+Environmental,Hazardous waste management,777
+Environmental,Radiation Protection and Toxic Materials Controls,123
+Chemical,Process engineering,12345
+Chemical,Materials science,9999
+Chemical,Plastics & Polymers,5000
+Chemical,Heat transfer,4100
+Chemical,Chemical plant operations,3900
+Chemical,"Properties of gases, liquids and solids",2500
+Chemical,Analytical Chemistry,2580
+Chemical,Fluid dynamics,2600
+Chemical,Gas/Solid/Liquid unit operations,1888
+Chemical,Separations,1222
+Chemical,Kinetics and reaction engineering,999
+Chemical,Thermodynamics (Chemical Engineering),555
+Chemical,Mass transfer,444
+Chemical,Thermodynamics,111
+Communications,Wireless communication,6666
+Communications,Antennae,4999
+Communications,Digital Signal Processing,3444
+Communications,Radar,2277
+Communications,Broadcast engineering,2188
+Communications,Video Engineering,1100
+Communications,Microwaves,888
+Industrial,Manufacturing engineering,8111
+Industrial,Automation & control systems,4000
+Industrial,Maintenance engineering,3888
+Industrial,Plant engineering,3777
+Industrial,Component engineering,1777
+Industrial,Systems engineering,933
+Industrial,Lean manufacturing (Industrial Engineering),555
+Industrial,Reliability engineering,344
+Industrial,Ergonomics/human factors engineering,244
+Operations,Quality management & control,7999
+Operations,Project management,4799
+Operations,Supply chain management,2666
+Operations,Quantitative analysis (management science),977
+Operations,Lean manufacturing (Operations Management),822
+Operations,Facilities/Plant layout,577
+Operations,Risk management,488
+Operations,Lean manufacturing,422
+Energy & petroleum,Petroleum and fossil fuels engineering,4777
+Energy & petroleum,Power distribution,3888
+Energy & petroleum,Batteries / Fuel Cells,2666
+Energy & petroleum,Solar engineering,2222
+Energy & petroleum,Bio-energy eng,1010
+Energy & petroleum,Integrated energy systems,7111
+Energy & petroleum,Wind engineering,689
+Energy & petroleum,Nuclear engineering,400
+Energy & petroleum,Hydro-engineering,499
+MakerSpace,Electronics,8099
+MakerSpace,Robotics,1444
+MakerSpace,Fabrication,811
+MakerSpace,Machines and Mechanisms,699
+Sciences,Chemistry,4444
+Sciences,Physics,3111
+Sciences,Biology,1222
+Sciences,Biochemistry,655
+BT,Biomedical engineering,6444
+BT,Biochemical engineering,722
+BT,Biofuels engineering,222
+Maths,Geometry,1555
+Maths,Probability & Statistics,1177
+Maths,Differential Equations,888
+Maths,Calculus,789
+Maths,Algebra,765
+Maths,Numerical Analysis,41
+Software,Programming,3130
+Software,Security,888
+Software,Estimation,567
+Software,Measurement,246
+Business,Management,4444
+Business,Leadership,2222
+Business,Communication,1357
+Business,Sales,222
+Business,Finance,112
+General,,300

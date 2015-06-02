@@ -1,0 +1,225 @@
+.parcoords > svg, .parcoords > canvas {
+  font: 14px sans-serif;
+  position: absolute;
+}
+.parcoords > canvas {
+  pointer-events: none;
+}
+
+.parcoords text.label {
+  cursor: default;
+}
+
+.parcoords rect.background {
+  fill: transparent;
+}
+.parcoords rect.background:hover {
+  fill: rgba(120,120,120,0.2);
+}
+.parcoords .resize rect {
+  fill: rgba(0,0,0,0.1);
+}
+.parcoords rect.extent {
+  fill: rgba(255,255,255,0.25);
+  stroke: rgba(0,0,0,0.6);
+}
+.parcoords .axis line, .parcoords .axis path {
+  fill: none;
+  stroke: #222;
+  shape-rendering: crispEdges;
+}
+.parcoords canvas {
+  opacity: 1;
+  -moz-transition: opacity 0.3s;
+  -webkit-transition: opacity 0.3s;
+  -o-transition: opacity 0.3s;
+}
+.parcoords canvas.faded {
+  opacity: 0.25;
+}
+.parcoords {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.color-info {
+  padding: 0;
+}
+
+.color-info li {
+  list-style: none;
+  padding-right: 20px;
+  display: inline-block;
+}
+
+.groupItemColor {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+}
+
+.table-container {
+  max-width: 100%;
+  overflow: auto;
+}
+
+.odd {
+  background-color: #EEE;
+}
+
+.active {
+  background-color: #FFFFDD;
+}
+
+#results-table th {
+  padding-right: 40px;
+  position: relative;
+}
+
+.sort-btn-block {
+  float: right;
+  width: 22px;
+  height: 50px;
+  position: absolute;
+  right: 10px;
+  top: 6px;
+}
+
+.sort-btn-block .sort-btn {
+  position: absolute;
+  left: 0;
+}
+
+.sort-btn-block .asc {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid gray;
+  top: 0;
+}
+
+.sort-btn-block .asc:hover {
+  border-bottom-color: green;
+}
+
+.sort-btn-block .asc.selected {
+  border-bottom-color: blue;
+}
+
+.sort-btn-block .desc {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid gray;
+  top: 15px;
+}
+
+.sort-btn-block .desc:hover {
+  border-top-color: green;
+}
+
+.sort-btn-block .desc.selected {
+  border-top-color: blue;
+}
+
+/* Separate this out into a separate file */
+/* Header css */
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+h1 {
+  margin: 0;
+  padding: 15px 0;
+}
+
+p {
+  margin-top: 0;
+}
+
+.header {
+  background-color: #414141;
+  color: #FFF;
+  border-top: 2px solid #F88204;
+}
+
+.footer {
+  background-color: #414141;
+  color: #FFF;
+  border-bottom: 5px solid #F88204;
+  padding: 10px;
+  text-align: right;
+}
+
+.main {
+  padding-left: 300px;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.sidebar {
+  width: 300px;
+  background-color: beige;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+label {
+  display: block;
+  padding: 5px 0;
+}
+
+select {
+  display: block;
+}
+
+.sidebar-block {
+  padding: 20px 10px;
+}
+
+.content {
+  padding: 20px;
+}
+
+.col {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.footer img {
+  height: 20px;
+}
+
+.clearfix:before, .clearfix:after {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.container {
+  width: 100%;
+  max-width: 980px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 auto;
+}

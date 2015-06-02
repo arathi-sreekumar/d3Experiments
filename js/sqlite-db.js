@@ -204,7 +204,7 @@ var createDB = function () {
     sqlLite.webdb.changeHideAxes = function (axes) {
         hideAxisArray = axes;
 
-        var colors = d3.scale.category20B();
+        var colors = d3.scale.category20b();
 
         var color = function(d) {
             return colors(d['groups']);

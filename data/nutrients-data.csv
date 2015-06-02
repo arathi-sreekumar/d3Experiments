@@ -1,0 +1,2 @@
+name,groups,protein (g),calcium (g),sodium (g),fiber (g),vitaminc (g),potassium (g),carbohydrate (g),sugars (g),fat (g),water (g),calories,saturated (g),monounsat (g),polyunsat (g)
+TEXT,TEXT,REAL,REAL,REAL,REAL,REAL,REAL,REAL,REAL,REAL,REAL,REAL,REAL,REAL,REAL

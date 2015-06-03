@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parallel sets Prototype</title>
+    <meta name="description" content="">
+    <link rel="stylesheet" type="text/css" href="css/d3.parsets.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+  </head>
+  <body>
+    <script src="js/vendor/jquery.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="js/d3.parsets.js"></script>
+    <script src="js/highlight.min.js"></script>
+    <script src="js/create.parset.js"></script>
+
+    <header id="header" class="header block">
+      <div class="container">
+        <h1>Parallel sets Prototype</h1>
+      </div>
+    </header>
+    <div class="wrapper clearfix">
+        <aside class="sidebar col">
+          <div class="sidebar-block">
+
+          </div>
+        </aside>
+        <div class="main col">
+          <div class="content">
+
+            <p>Total results displayed: <span class="result-count"></span></p>
+
+            <ul id="color-info" class="color-info"></ul>
+
+            <div id="vis"></div>
+            <div class="options">
+              <span class="curves"><label for="curved"><input type="checkbox" id="curved" onchange="curves.call(this)"> Curves?</label></span>
+            </div>
+
+            <div class="table-container">
+              <table id="results-table" cellpadding="10" cellspacing="0" border="1"></table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        a test prototype by Arathi M S
+      </div>
+    </footer>
+  </body>
+</html>

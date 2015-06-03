@@ -5,6 +5,8 @@ This is just a rapid prototype developed for demo purposes. I have created a ver
 
 The parallel coordinates code is used from https://syntagmatic.github.io/parallel-coordinates/ 
 
+The parallel sets is by Jason Davies: https://www.jasondavies.com/parallel-sets/
+
 I have mainly used a browser sqlLite database to show how this can be used to manipulate and visualise the available data through live filtering.
 
 To see this code in action, simply clone this repository and start up a simple web server.

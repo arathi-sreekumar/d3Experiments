@@ -13,7 +13,7 @@ var createDB = function () {
     var hideAxisArray = ['name'];
 
     sqlLite.resultSet = [];
-    sqlLite.allColumns = ['name', 'groups'];
+    sqlLite.allColumns = ['name', 'group'];
     sqlLite.currentColumns = [];
 
     sqlLite.webdb.open = function() {
@@ -61,12 +61,15 @@ var createDB = function () {
         var types = [];
         Object.getOwnPropertyNames(firstDataItem).forEach(function(val, index) {
             if (columns === '(') {
-                columns = columns + val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct") + ' ' + dataTypes[0][val];
+                columns = columns + '"' + val + '" ' + dataTypes[0][val];
             } else {
-                columns = columns + ', ' + val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct") + ' ' + dataTypes[0][val];
+                columns = columns + ', "' + val + '" ' + dataTypes[0][val];
             }
         });
         columns += ')';
+
+        console.log(columns);
+
         sqlLite.webdb.createTable(columns);
         populateMaterials();
     };
@@ -74,12 +77,12 @@ var createDB = function () {
     createPropertiesFilter = function () {
         var firstDataItem = data[0];
         var propertyName, propertyValue;
-        var removeProperties = ['name', 'groups'];
+        var removeProperties = ['name', 'group'];
         var count = 2;
         Object.getOwnPropertyNames(firstDataItem).forEach(function(val, index) {
             if (removeProperties.indexOf(val) === -1) {
                 propertyName = val;
-                propertyValue = val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct");
+                propertyValue = val;
                 sqlLite.allColumns[count] = propertyValue;
                 count ++;
                 $('#filter-properties').append('<option value="' + propertyValue + '">' + propertyName + '</option>');
@@ -88,7 +91,7 @@ var createDB = function () {
     };
 
     createGroupFilter = function () {
-        var groups = pluck(data, 'groups').filter(function(itm,i,a){
+        var groups = pluck(data, 'group').filter(function(itm,i,a){
             return i==a.indexOf(itm);
         });
         groups.forEach(function(val, index) {
@@ -111,10 +114,10 @@ var createDB = function () {
             var values = '(';
             Object.getOwnPropertyNames(dataItem).forEach(function(property, index) {
                 if (columns === '(') {
-                    columns = columns + property.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct");
+                    columns = columns + '"' + property + '"';
                     values = values + '"' + dataItem[property] + '"';
                 } else {
-                    columns = columns + ', ' + property.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct");
+                    columns = columns + ', "' + property + '"';
                     values = values + ', "' + dataItem[property] + '"';
                 }
             });
@@ -144,7 +147,7 @@ var createDB = function () {
 
     sqlLite.webdb.selectAll = function() {
       var db = sqlLite.webdb.db;
-      var columns = sqlLite.allColumns.join(', ');
+      var columns = '"' + sqlLite.allColumns.join('", "') + '"';
       sqlLite.currentColumns = sqlLite.allColumns;
       currentQuery = 'SELECT ' + columns + ' FROM ' + tableName;
       db.transaction(function(tx) {
@@ -207,7 +210,7 @@ var createDB = function () {
         var colors = d3.scale.category20b();
 
         var color = function(d) {
-            return colors(d['groups']);
+            return colors(d['group']);
         };
 
         parcoords = d3.parcoords()("#example-progressive")
@@ -239,11 +242,11 @@ var createDB = function () {
 
         var color = function(d) {
           //console.log('colors of Processing Narrative: ', colors(d['Processing Narrative']));
-          if (!colorInfo[d['groups']]) {
-            colorInfo[d['groups']] = colors(d['groups']);
-            $infoBlock.append('<li><span class="groupItemColor" style="background-color: ' + colors(d['groups']) + ';"></span> ' + d['groups'] +'</li>');
+          if (!colorInfo[d['group']]) {
+            colorInfo[d['group']] = colors(d['group']);
+            $infoBlock.append('<li><span class="groupItemColor" style="background-color: ' + colors(d['group']) + ';"></span> ' + d['group'] +'</li>');
           }
-          return colors(d['groups']);
+          return colors(d['group']);
         };
 
         parcoords = d3.parcoords()("#example-progressive")
@@ -276,7 +279,7 @@ var createDB = function () {
         var sortButton = '';
         var columnName = '';
         sqlLite.currentColumns.forEach(function(val, index) {
-            columnName = val.replace(/ /g,"_").replace(/['():^-]/g,"").replace(/\//g,"by").replace(/%/g,"pct");
+            columnName = val;
             sortButton = '<span class="sort-btn-block"><span class="sort-btn asc'
             if (val === currentSortedColumn && currentSorting === 'asc') {
                 sortButton += ' selected';
@@ -312,7 +315,9 @@ var createDB = function () {
     };
 
     function pluck(array, key) {
-      return array.map(function(item) { return item[key]; });
+        return array.map(function(item) {
+            return item[key];
+        });
     }
 
     return sqlLite;

@@ -90,15 +90,18 @@
 
         materialsDB.currentColumns = materialsDB.allColumns;
         if (columnsList.indexOf('All') === -1) {
-          columns = 'name, groups, "'+ columnsList.join('", "') + '"';
-          materialsDB.currentColumns = ['name', 'groups'].concat(columnsList);
+          columns = '"name", "group", "'+ columnsList.join('", "') + '"';
+          materialsDB.currentColumns = ['name', 'group'].concat(columnsList);
         }
         var query = '';
         query = 'SELECT ' + columns + ' FROM Nutrients';
+
         if (group.indexOf('All') === -1) {
           isSelectAll = false;
-          query = query + ' WHERE groups IN ("' + group.join('", "') + '")';
+          query = query + ' WHERE "group" IN ("' + group.join('", "') + '")';
         }
+
+        console.log(query);
         materialsDB.webdb.selectQuery(query);
       });
 
@@ -139,7 +142,7 @@
         $('#example-progressive').empty();
         if($(this).is(':checked')) {
           $('.toggle-materials-label').text('Hide names in graph');
-          materialsDB.webdb.changeHideAxes(['groups']);
+          materialsDB.webdb.changeHideAxes(['group']);
         } else {
           $('.toggle-materials-label').text('Show names in graph');
           materialsDB.webdb.changeHideAxes(['name']);
@@ -154,13 +157,13 @@
           query = 'SELECT ' + columns + ' FROM Nutrients';
           if (group.indexOf('All') === -1) {
             isSelectAll = false;
-            query = query + ' WHERE groups IN ("' + group.join('", "') + '")';
+            query = query + ' WHERE "group" IN ("' + group.join('", "') + '")';
           }
 
           if (isSelectAll) {
-            query = query + ' WHERE name IN ("' + currentMaterials.join('", "') + '")';
+            query = query + ' WHERE "name" IN ("' + currentMaterials.join('", "') + '")';
           } else {
-            query = query + ' AND name IN ("' + currentMaterials.join('", "') + '")';
+            query = query + ' AND "name" IN ("' + currentMaterials.join('", "') + '")';
           }
 
           materialsDB.webdb.highlightQuery(query);
